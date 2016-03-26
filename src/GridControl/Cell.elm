@@ -9,8 +9,9 @@ module GridControl.Cell
   where
 
 import Html exposing (..)
-import Html.Attributes exposing (classList)
 import Html.Events exposing (onClick, onMouseDown, onMouseEnter, onMouseLeave)
+
+import GridControl.CssClasses exposing (..)
 
 
 -- MODEL
@@ -55,6 +56,6 @@ view address model =
     [ onMouseDown address MouseDown
     , onMouseEnter address MouseEnter
     , onMouseLeave address MouseLeave
-    , classList [("cell", True), ("active", model)]
+    , classList [(Cell, True), (Active, model)]
     ]
     []

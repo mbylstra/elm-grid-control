@@ -257,7 +257,7 @@ toColumns matrix =
   in
     Array.map
       (\x -> getColumn x matrix |> Maybe.withDefault Array.empty)
-      (Array.fromList [0..width])
+      (Array.fromList [0..width-1])
 
 {-| Convert a matrix to an array of arrays
 -}
@@ -269,7 +269,7 @@ toColumnsLists matrix =
   in
     List.map
       (\x -> getColumn x matrix |> Maybe.withDefault Array.empty |> Array.toList)
-      [0..width]
+      [0..width-1]
 
 {-| Convert a matrix to a list of lists
 -}
@@ -343,6 +343,7 @@ indexedMapColumns : (Int -> Array a -> b) -> Matrix a -> Array b
 indexedMapColumns func matrix =
   let
     columns = toColumns matrix
+    -- _ = Debug.
   in
     Array.indexedMap func columns
 

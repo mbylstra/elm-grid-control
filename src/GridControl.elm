@@ -1,13 +1,17 @@
 module GridControl where
 
 import Html exposing (..)
-import Html.Attributes exposing (style, class)
+-- import Html.Attributes exposing (style)
 import Html.Events exposing (onMouseDown, onMouseUp, onMouseEnter, onMouseLeave)
+
 
 -- import Array
 import Matrix exposing (Matrix)
 
 import GridControl.Cell as Cell exposing (Action(MouseEnter), UpdateParams)
+
+import GridControl.CssClasses exposing (..)
+
 
 
 -- MODEL
@@ -105,14 +109,14 @@ update action model =
 view : Signal.Address Action -> Model -> Html
 view address model =
   div
-    [ class "grid"
+    [ class [Grid]
     , onMouseDown address MouseDown
     , onMouseUp address MouseUp
     , onMouseLeave address MouseLeave
     ]
     ( Matrix.indexedMapColumnsLists
       (\x column ->
-        (columnView address x column)
+        (columnView address (Debug.log "x" x) column)
       )
       model.cells
     )
@@ -121,7 +125,7 @@ view address model =
 columnView : Signal.Address Action -> Int -> List Cell.Model -> Html
 columnView address x column =
   div
-    [ class "column"
+    [ class [Column]
     , onMouseLeave address (MouseLeaveColumn x)
     ]
     ( List.indexedMap
