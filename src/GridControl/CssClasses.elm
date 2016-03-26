@@ -5,9 +5,11 @@ import Html.CssHelpers exposing (withNamespace)
 
 type CssClasses
   = Grid
-  | Cell
+  | ColumnGroup
   | Column
+  | Cell
   | Active
+  | NotDraggable
 
 namespace : String
 namespace = "ElmGridControl"

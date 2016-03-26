@@ -1,5 +1,5 @@
 import Html exposing (div, button, text, node, h2, p)
-import Html.Attributes exposing (style)
+import Html.Attributes exposing (style, class)
 import StartApp.Simple as StartApp
 import GridControl as GridControl
 import GridControl.DefaultCss exposing (stylesText)
@@ -13,6 +13,25 @@ main =
     }
 
 
+demoStylesText = """
+  /* apply a natural box layout model to all elements, but allowing components to change */
+  html {
+    box-sizing: border-box;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+
+  html, head, body, body > div, .demo {
+    height: 100%;
+    width: 100%;
+  }
+
+  .demo {
+    max-width: 800px;
+    max-height: 400px;
+  }
+"""
 
 
 styleNode cssString =
@@ -20,8 +39,8 @@ styleNode cssString =
 
 
 view action model =
-  div []
-    [ styleNode stylesText
+  div [ class "demo" ]
+    [ styleNode (demoStylesText ++ stylesText)
       --   body {
       --     padding: 40px;
       --     font-family: 'Montserrat', Arial, serif; font-weight: 400;
@@ -51,11 +70,5 @@ view action model =
       --     background-color: rgba(255, 0, 0, 0.4);
       --   }
       -- """
-    , div
-        [ style
-          [ ("width", "100%")
-          , ("height", "300px")
-          ]
-        ]
-        [ GridControl.view action model ]
+    , GridControl.view {columnGroupLength=4} action model
     ]

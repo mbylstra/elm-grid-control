@@ -63,13 +63,21 @@ css =
         [ displayFlex
         , width (pct 100)
         , height (pct 100)
-        , border3 (px 2) solid (rgb 0 0 0)
+        , border3 (px 1) solid (rgb 255 255 255)
         , property "cursor" "default"
         ]
+    , (.) ColumnGroup
+      [ displayFlex
+      , flexDirection row
+      , property "flex" "1"
+      , borderLeft3 (px 5) solid (rgb 255 255 255)
+      ]
     , (.) Column
       [ displayFlex
       , flexDirection column
       , property "flex" "1"
+      , borderTop3 (px 5) solid (rgb 255 255 255)
+      , borderBottom3 (px 5) solid (rgb 255 255 255)
       ]
     , (.) Cell
       [ property "flex" "1"
@@ -78,6 +86,12 @@ css =
       ]
     , (.) Active
       [ backgroundColor teal
+      ]
+    , (.) NotDraggable
+      [ property "user-drag" "none"
+      , property "user-select" "none"
+      , property "-webkit-user-drag" "none"
+      , property "-webkit-user-select" "none"
       ]
     ]
 

@@ -56,6 +56,6 @@ view address model =
     [ onMouseDown address MouseDown
     , onMouseEnter address MouseEnter
     , onMouseLeave address MouseLeave
-    , classList [(Cell, True), (Active, model)]
+    , classList [(Cell, True), (NotDraggable, True), (Active, model)]
     ]
     []

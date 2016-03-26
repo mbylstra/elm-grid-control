@@ -6,7 +6,7 @@ module Matrix (Matrix,
   toIndexedArray, empty,
   map, map2, indexedMap, filter, mapRows, mapRowsLists, indexedMapRows,
   mapColumns, indexedMapColumns, indexedMapColumnsLists,
-  toRows, toRowsLists
+  toRows, toRowsLists, toColumnsLists
 
   ) where
 {-|

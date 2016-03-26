@@ -11,6 +11,7 @@ import Matrix exposing (Matrix)
 import GridControl.Cell as Cell exposing (Action(MouseEnter), UpdateParams)
 
 import GridControl.CssClasses exposing (..)
+import GridControl.ListExtra exposing (splitByN)
 
 
 
@@ -42,7 +43,8 @@ type Action
 
 update : Action -> Model -> Model
 update action model =
-  case Debug.log "action" action of
+  -- case Debug.log "action" action of
+  case action of
     MouseLeave ->
       { model | currColumnIndex = Nothing, mouseDown = False }
 
@@ -106,20 +108,42 @@ update action model =
 -- VIEW
 
 
-view : Signal.Address Action -> Model -> Html
-view address model =
-  div
-    [ class [Grid]
-    , onMouseDown address MouseDown
-    , onMouseUp address MouseUp
-    , onMouseLeave address MouseLeave
-    ]
-    ( Matrix.indexedMapColumnsLists
-      (\x column ->
-        (columnView address (Debug.log "x" x) column)
-      )
+view : { columnGroupLength: Int} -> Signal.Address Action -> Model -> Html
+view params address model =
+  let
+    columnGroups =
       model.cells
-    )
+      |> Matrix.toColumnsLists
+      |> splitByN params.columnGroupLength
+
+    columnGroupView :
+        Signal.Address Action
+        -> {columnGroup : List (List Cell.Model), groupIndex : Int}
+        -> Html
+    columnGroupView address model =
+        div [ class [ColumnGroup] ]
+          (List.indexedMap
+            (\i column ->
+              columnView
+                address
+                (model.groupIndex * params.columnGroupLength + i)
+                column
+            )
+            model.columnGroup
+          )
+  in
+    div
+      [ class [Grid]
+      , onMouseDown address MouseDown
+      , onMouseUp address MouseUp
+      , onMouseLeave address MouseLeave
+      ]
+      (List.indexedMap
+        (\i columnGroup ->
+          columnGroupView address {columnGroup=columnGroup, groupIndex=i}
+        )
+        columnGroups
+      )
 
 
 columnView : Signal.Address Action -> Int -> List Cell.Model -> Html
