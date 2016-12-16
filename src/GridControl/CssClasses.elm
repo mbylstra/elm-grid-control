@@ -1,4 +1,4 @@
-module GridControl.CssClasses where
+module GridControl.CssClasses exposing (..)
 
 import Html.CssHelpers exposing (withNamespace)
 

@@ -1,12 +1,11 @@
-module GridControl.Cell
+module GridControl.Cell exposing
   ( init
   , update
   , view
   , Model
-  , Action (MouseEnter, MouseDown)
+  , Msg (MouseEnter, MouseDown)
   , UpdateParams
   )
-  where
 
 import Html exposing (..)
 import Html.Events exposing (onClick, onMouseDown, onMouseEnter, onMouseLeave)
@@ -31,9 +30,9 @@ set model = model
 type alias UpdateParams =
   { mouseDown : Bool }
 
-type Action = MouseDown | MouseEnter | MouseLeave
+type Msg = MouseDown | MouseEnter | MouseLeave
 
-update : Action -> UpdateParams -> Model -> Model
+update : Msg -> UpdateParams -> Model -> Model
 update action params model =
   case action of
     MouseEnter ->
@@ -50,12 +49,12 @@ update action params model =
 
 -- VIEW
 
-view : Signal.Address Action -> Model -> Html
-view address model =
+view : Model -> Html Msg
+view model =
   div
-    [ onMouseDown address MouseDown
-    , onMouseEnter address MouseEnter
-    , onMouseLeave address MouseLeave
+    [ onMouseDown MouseDown
+    , onMouseEnter MouseEnter
+    , onMouseLeave MouseLeave
     , classList [(Cell, True), (NotDraggable, True), (Active, model)]
     ]
     []

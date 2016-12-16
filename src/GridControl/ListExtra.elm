@@ -1,4 +1,4 @@
-module GridControl.ListExtra where
+module GridControl.ListExtra exposing (..)
 
 {-|
   Split a list into lists of length N. If length is not a

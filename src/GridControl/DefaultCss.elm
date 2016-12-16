@@ -1,4 +1,4 @@
-module GridControl.DefaultCss where
+module GridControl.DefaultCss exposing (..)
 
 import Css exposing (..)
 -- import Css.Elements exposing (..)
@@ -6,7 +6,7 @@ import Css.Namespace
 
 import GridControl.CssClasses exposing (..)
 
-import Css.Colors exposing (..)
+-- import Css.Colors exposing (..)
 -- import Css.Namespace exposing (namespace)
 -- import Html.CssHelpers exposing (namespace)
 -- import Color exposing (..)
@@ -85,7 +85,7 @@ css =
       , backgroundColor (rgba 0 0 0 0.05)
       ]
     , (.) Active
-      [ backgroundColor teal
+      [ backgroundColor <| hex "#CCC"
       ]
     , (.) NotDraggable
       [ property "user-drag" "none"
@@ -126,4 +126,4 @@ css =
 --     ]
 
 stylesText : String
-stylesText = .css <| compile css
+stylesText = .css <| compile [css]

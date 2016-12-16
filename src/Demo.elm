@@ -1,15 +1,17 @@
 import Html exposing (div, button, text, node, h2, p)
 import Html.Attributes exposing (style, class)
-import StartApp.Simple as StartApp
-import GridControl as GridControl
 import GridControl.DefaultCss exposing (stylesText)
 
+import Html
+import GridControl exposing (init, update, view, Msg, Model)
 
+
+main : Program Never Model Msg
 main =
-  StartApp.start
-    { model = GridControl.init 16 12
+  Html.beginnerProgram
+    { model = init 16 12
+    , update = update
     , view = view
-    , update = GridControl.update
     }
 
 
@@ -38,7 +40,7 @@ styleNode cssString =
   node "style" [] [ text cssString ]
 
 
-view action model =
+view model =
   div [ class "demo" ]
     [ styleNode (demoStylesText ++ stylesText)
       --   body {
@@ -70,5 +72,5 @@ view action model =
       --     background-color: rgba(255, 0, 0, 0.4);
       --   }
       -- """
-    , GridControl.view {columnGroupLength=4} action model
+    , GridControl.view {columnGroupLength=4} model
     ]

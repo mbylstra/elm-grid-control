@@ -1,4 +1,4 @@
-module GridControl where
+module GridControl exposing (..)
 
 import Html exposing (..)
 -- import Html.Attributes exposing (style)
@@ -7,8 +7,9 @@ import Html.Events exposing (onMouseDown, onMouseUp, onMouseEnter, onMouseLeave)
 
 -- import Array
 import Matrix exposing (Matrix)
+import Matrix.Extra2 exposing (toColumnsLists)
 
-import GridControl.Cell as Cell exposing (Action(MouseEnter), UpdateParams)
+import GridControl.Cell as Cell exposing (Msg(MouseEnter), UpdateParams)
 
 import GridControl.CssClasses exposing (..)
 import GridControl.ListExtra exposing (splitByN)
@@ -33,15 +34,15 @@ init width height =
 
 -- UPDATE
 
-type Action
+type Msg
   = MouseDown
   | MouseUp
   | MouseLeave
   | MouseLeaveColumn Int
-  | CellAction { x : Int, y : Int} Cell.Action
+  | CellMsg { x : Int, y : Int} Cell.Msg
 
 
-update : Action -> Model -> Model
+update : Msg -> Model -> Model
 update action model =
   -- case Debug.log "action" action of
   case action of
@@ -51,8 +52,8 @@ update action model =
     MouseLeaveColumn columnId ->
       { model | currColumnIndex = Nothing }
 
-    CellAction pos cellAction ->
-      case cellAction of
+    CellMsg pos cellMsg ->
+      case cellMsg of
         Cell.MouseEnter ->
           -- looks like we'll have big problems if Cell.MouseEnter and MouseEnterColumn are fired at the same time!
           -- if mouseDown, then iterate through each cell in the column. If y does not match, then turn off, else turn on
@@ -96,7 +97,7 @@ update action model =
               cells = Matrix.update
                 pos.x
                 pos.y
-                (Cell.update cellAction { mouseDown = model.mouseDown })
+                (Cell.update cellMsg { mouseDown = model.mouseDown })
                 model.cells
             }
     MouseDown ->
@@ -108,24 +109,22 @@ update action model =
 -- VIEW
 
 
-view : { columnGroupLength: Int} -> Signal.Address Action -> Model -> Html
-view params address model =
+view : { columnGroupLength: Int} -> Model -> Html Msg
+view params model =
   let
     columnGroups =
       model.cells
-      |> Matrix.toColumnsLists
+      |> toColumnsLists
       |> splitByN params.columnGroupLength
 
     columnGroupView :
-        Signal.Address Action
-        -> {columnGroup : List (List Cell.Model), groupIndex : Int}
-        -> Html
-    columnGroupView address model =
+        {columnGroup : List (List Cell.Model), groupIndex : Int}
+        -> Html Msg
+    columnGroupView model =
         div [ class [ColumnGroup] ]
           (List.indexedMap
             (\i column ->
               columnView
-                address
                 (model.groupIndex * params.columnGroupLength + i)
                 column
             )
@@ -134,27 +133,27 @@ view params address model =
   in
     div
       [ class [Grid]
-      , onMouseDown address MouseDown
-      , onMouseUp address MouseUp
-      , onMouseLeave address MouseLeave
+      , onMouseDown MouseDown
+      , onMouseUp MouseUp
+      , onMouseLeave MouseLeave
       ]
       (List.indexedMap
         (\i columnGroup ->
-          columnGroupView address {columnGroup=columnGroup, groupIndex=i}
+          columnGroupView {columnGroup=columnGroup, groupIndex=i}
         )
         columnGroups
       )
 
 
-columnView : Signal.Address Action -> Int -> List Cell.Model -> Html
-columnView address x column =
+columnView : Int -> List Cell.Model -> Html Msg
+columnView x column =
   div
     [ class [Column]
-    , onMouseLeave address (MouseLeaveColumn x)
+    , onMouseLeave (MouseLeaveColumn x)
     ]
     ( List.indexedMap
       (\y cell ->
-        (Cell.view (Signal.forwardTo address (CellAction {x=x, y=y})) cell)
+        Html.map (CellMsg {x=x, y=y}) (Cell.view cell)
       )
       column
     )
